@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      args:
+        DOCKER_PORT: ${DOCKER_PORT}
+    env_file:
+      - .env
+    ports:
+      - "${WEB_PORT}:${DOCKER_PORT}"
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    # 네트워크가 있을 때
+    # networks:
+    #   - networkName
+
+# networks:
+#   networkName:
+#     external: true

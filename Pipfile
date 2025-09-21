@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+uvicorn = {extras = ["standard"], version = "*"}
+gunicorn = "*"
+pydantic = "*"
+pydantic-settings = "*"
+fastapi = "*"
+starlette = "*"
+
+[dev-packages]
+pre-commit = "*"
+pytest = "*"
+httpx = "*"
+
+[requires]
+python_version = "3.12"
