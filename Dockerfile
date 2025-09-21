@@ -4,9 +4,6 @@ FROM python:3.12-slim
 # 2. 작업 디렉토리 설정
 WORKDIR /app
 
-# 환경 변수 설정
-ENV DOCKER_PORT=${DOCKER_PORT}
-
 # 3. pipenv 설치
 RUN pip install pipenv
 
@@ -16,8 +13,6 @@ RUN pipenv install --deploy --ignore-pipfile
 
 # 5. 나머지 소스 코드 복사
 COPY . .
-
-EXPOSE ${DOCKER_PORT}
 
 # 6. Gunicorn 실행 (gunicorn.conf.py 설정 사용)
 CMD ["pipenv", "run", "gunicorn", "-c", "gunicorn.conf.py"]
