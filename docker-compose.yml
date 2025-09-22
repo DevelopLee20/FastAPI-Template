@@ -11,10 +11,3 @@ services:
     volumes:
       - ./logs:/app/logs
     restart: unless-stopped
-    # 네트워크가 있을 때
-    # networks:
-    #   - networkName
-
-# networks:
-#   networkName:
-#     external: true

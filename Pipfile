@@ -10,6 +10,11 @@ pydantic = "*"
 pydantic-settings = "*"
 fastapi = "*"
 starlette = "*"
+python-jose = {extras = ["cryptography"], version = "*"}
+sqlalchemy = "*"
+psycopg2-binary = "*"
+passlib = "*"
+python-multipart = "*"
 
 [dev-packages]
 pre-commit = "*"

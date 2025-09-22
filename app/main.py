@@ -4,27 +4,24 @@ from app.core.logging import setup_logging
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
-
 from app.core.env import settings
-from app.routers import example_router as example_router
-from app.core.exceptions import NotFoundException
+from app.api.api_v1.api import api_router
+from app.db.init_db import init_db
+from app.db.session import SessionLocal
 from app.base.base_exception import BaseException
 
 # 로깅 설정
 logger = setup_logging()
 
-match settings.MODE:
-    case "dev":
-        logger.info("개발 모드로 실행 중...")
-        app = FastAPI()
-    case "prod":
-        logger.info("운영 모드로 실행 중...")
-        app = FastAPI(docs_url=None, redoc_url=None)
-    case _:
-        logger.error("MODE 환경 변수가 올바르지 않습니다. (dev, prod 중 하나여야 함)")
-        raise ValueError(
-            "MODE 환경 변수가 올바르지 않습니다. (dev, prod 중 하나여야 함)"
-        )
+app = FastAPI(
+    title="FastAPI-template",
+    openapi_url="/api/v1/openapi.json",
+    docs_url="/docs" if settings.MODE == "dev" else None,
+    redoc_url="/redoc" if settings.MODE == "dev" else None,
+)
+
+# 예외 핸들러 등록
+app.add_exception_handler(BaseException, BaseException.exception_handler)
 
 # CORS 미들웨어 추가
 app.add_middleware(
@@ -38,11 +35,16 @@ app.add_middleware(
 # assets 폴더를 /assets 경로로 매핑
 app.mount("/app/assets", StaticFiles(directory="app/assets"), name="assets")
 
-# 예외 핸들러 등록
-app.add_exception_handler(BaseException, BaseException.exception_handler)
+
+@app.on_event("startup")
+def on_startup():
+    logger.info(f"{settings.MODE} 모드로 실행 중...")
+    db = SessionLocal()
+    init_db(db)
+
 
 # 라우터 포함
-app.include_router(example_router.router)
+app.include_router(api_router, prefix="/api/v1")
 
 
 @app.get("/")
@@ -51,11 +53,6 @@ async def main():
     return {"message": "Hello World"}
 
 
-@app.get("/test-error")
-async def test_error():
-    raise NotFoundException(message="This is a test error from /test-error")
-
-
-@app.get("/favicon.ico")
+@app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
-    return RedirectResponse(url="/assets/favicon.ico")
+    return RedirectResponse(url="/app/assets/favicon.ico")
