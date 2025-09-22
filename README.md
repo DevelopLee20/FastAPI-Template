@@ -51,3 +51,9 @@ pipenv run pytest
 ```bash
 docker-compose up
 ```
+
+### Run Docker compose Daemon
+
+```bash
+docker-compose up -d
+```
