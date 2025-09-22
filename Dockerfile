@@ -1,5 +1,5 @@
 # 1. Python 3.12-slim을 베이스 이미지로 사용
-FROM python:3.12-slim
+FROM python:3.12
 
 # 2. 작업 디렉토리 설정
 WORKDIR /app
